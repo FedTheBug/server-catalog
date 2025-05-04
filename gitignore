@@ -25,5 +25,4 @@ ties
 *.key
 secrets
 storage
-server-catalog
-vendor
+.server-catalog

@@ -1,0 +1,13 @@
+app:
+  host: "0.0.0.0"
+  port: 8080
+  env: "development"
+
+db:
+  host: "127.0.0.1"
+  port: 3306
+  username: user
+  password: secret
+  name: "leaseweb_servers"
+  max_idle_connections: 2
+  max_active_connections: 100

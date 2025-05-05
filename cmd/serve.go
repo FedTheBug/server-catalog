@@ -5,8 +5,11 @@ import (
 	"errors"
 	"fmt"
 	chi "github.com/go-chi/chi/v5"
+	cHttp "github.com/server-catalog/api/http"
 	"github.com/server-catalog/internal/config"
 	"github.com/server-catalog/internal/conn"
+	"github.com/server-catalog/repository"
+	"github.com/server-catalog/usecase"
 	"github.com/spf13/cobra"
 	"log"
 	"net/http"
@@ -40,11 +43,12 @@ func serve(cmd *cobra.Command, args []string) {
 		Handler: r,
 	}
 
-	//catalog repo
-	//TODO:: connect to catalog repo
+	// initialize repository
+	catRepo := repository.NewServerCatalog(conn.DefaultDB())
+	// initialize usecase
+	catUseCase := usecase.New(catRepo)
 
-	//TODO:: initiate usecase
-	//TODO:: initiate handler
+	cHttp.New(r, catUseCase)
 
 	stop := make(chan os.Signal)
 	signal.Notify(stop, os.Interrupt)

@@ -25,4 +25,4 @@ ties
 *.key
 secrets
 storage
-.server-catalog
+server-catalog

@@ -26,6 +26,7 @@ var serveCmd = &cobra.Command{
 		if err := conn.ConnectDB(); err != nil {
 			log.Fatalln(err)
 		}
+		fmt.Println("Database Connected Successfully")
 
 	},
 	Run: serve,

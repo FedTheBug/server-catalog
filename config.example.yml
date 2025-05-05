@@ -9,5 +9,5 @@ db:
   username: user
   password: secret
   name: "leaseweb_servers"
-  max_idle_connections: 2
+  max_idle_connections: 4
   max_active_connections: 100

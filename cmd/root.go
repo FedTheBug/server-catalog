@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/server-catalog/cmd/migration"
 	"github.com/spf13/cobra"
 	"log"
 )
@@ -15,6 +16,7 @@ var (
 
 func init() {
 	RootCmd.AddCommand(serveCmd)
+	RootCmd.AddCommand(migration.RootCmd)
 }
 
 func Execute() {

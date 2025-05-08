@@ -167,26 +167,31 @@ func parseHDD(hdd string) (count int, sizeGB int, typ string, err error) {
 func parsePrice(price string) (amount float64, currency string, err error) {
 	price = strings.TrimSpace(price)
 
-	// Updated regex to handle S$ and other currency symbols
 	re := regexp.MustCompile(`^([^\d]+)\s*([\d\.]+)$`)
 	matches := re.FindStringSubmatch(price)
 	if len(matches) != 3 {
 		return 0, "", fmt.Errorf("invalid price format: %s", price)
 	}
 
-	// Get the currency symbol and normalize it
 	currency = strings.TrimSpace(matches[1])
 
-	// Handle special case for Singapore Dollar
 	if currency == "S$" {
 		currency = utils.CurrencySymbolSGD
 	}
 
-	// Parse the amount
 	amount, err = strconv.ParseFloat(matches[2], 64)
 	if err != nil {
 		return 0, "", fmt.Errorf("invalid amount format: %s", matches[2])
 	}
 
 	return amount, currency, nil
+}
+
+func (sc *ServerCatalog) GetLocations(ctx context.Context) ([]string, error) {
+	locs, err := sc.SCRepo.GetLocations(ctx)
+	if err != nil {
+		return locs, err
+	}
+
+	return locs, nil
 }

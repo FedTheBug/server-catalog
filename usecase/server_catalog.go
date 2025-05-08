@@ -195,3 +195,12 @@ func (sc *ServerCatalog) GetLocations(ctx context.Context) ([]string, error) {
 
 	return locs, nil
 }
+
+func (sc *ServerCatalog) GetHDDTypes(ctx context.Context) ([]string, error) {
+	locs, err := sc.SCRepo.GetHDDTypes(ctx)
+	if err != nil {
+		return locs, err
+	}
+
+	return locs, nil
+}

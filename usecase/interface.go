@@ -2,9 +2,9 @@ package usecase
 
 import (
 	"context"
-	"github.com/server-catalog/models"
+	"github.com/server-catalog/internal/dto"
 )
 
 type CatalogUseCase interface {
-	UploadCatalog(ctx context.Context, ctr []models.ServerCatalog) error
+	UploadCatalog(ctx context.Context, ctr *dto.UploadCatalogCtr) error
 }

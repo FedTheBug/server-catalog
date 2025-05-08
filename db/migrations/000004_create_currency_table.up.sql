@@ -6,4 +6,5 @@ CREATE TABLE currency (
 
 INSERT INTO currency (type, symbol) VALUES
                                         ('USD', '$'),
-                                        ('Euro', '€');
+                                        ('Euro', '€')
+                                        ('Singapore Dollar', 'S$');

@@ -11,9 +11,10 @@ const (
 
 // Application represents application config
 type Application struct {
-	Base string
-	Port int
-	Env  string
+	Base            string
+	Port            int
+	Env             string
+	PaginationLimit int
 }
 
 var app Application
@@ -28,8 +29,9 @@ func LoadApp() {
 	defer mu.Unlock()
 
 	app = Application{
-		Base: viper.GetString("app.host"),
-		Port: viper.GetInt("app.port"),
-		Env:  viper.GetString("app.env"),
+		Base:            viper.GetString("app.host"),
+		Port:            viper.GetInt("app.port"),
+		Env:             viper.GetString("app.env"),
+		PaginationLimit: viper.GetInt("app.pagination_limit"),
 	}
 }

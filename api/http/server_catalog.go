@@ -2,6 +2,8 @@ package http
 
 import (
 	"github.com/go-chi/chi/v5"
+	"github.com/server-catalog/internal/dto"
+	"github.com/server-catalog/internal/utils"
 	"github.com/server-catalog/usecase"
 	"net/http"
 )
@@ -21,6 +23,43 @@ func New(router *chi.Mux, cuc usecase.CatalogUseCase) {
 }
 
 func (s *SCHandler) uploadCatalog(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Hello, world!"))
+	ctx := r.Context()
+
+	if err := r.ParseMultipartForm(10 << 20); err != nil {
+		_ = (&utils.Response{
+			Status:  http.StatusUnprocessableEntity,
+			Message: "unable to parse form",
+			Error:   err.Error(),
+		}).Render(w)
+		return
+	}
+
+	file, _, err := r.FormFile("file")
+	if err != nil {
+		_ = (&utils.Response{
+			Status:  http.StatusBadRequest,
+			Message: "file is required",
+			Error:   err.Error(),
+		}).Render(w)
+		return
+	}
+
+	if err := s.scUseCase.UploadCatalog(ctx, &dto.UploadCatalogCtr{File: file}); err != nil {
+		_ = (&utils.Response{
+			Status:  http.StatusBadRequest,
+			Message: "failed to upload file",
+			Error:   err.Error(),
+		}).Render(w)
+		return
+	}
+
+	defer file.Close()
+
+	_ = (&utils.Response{
+		Status:  http.StatusCreated,
+		Message: "Catalog uploaded",
+		Error:   err,
+	}).Render(w)
+
+	return
 }

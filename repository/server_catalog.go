@@ -15,5 +15,6 @@ func NewServerCatalog(db *gorm.DB) CatalogRepository {
 }
 
 func (sc *ServerCatalog) Upload(ctx context.Context, servers []models.ServerCatalog) error {
-	return nil
+	var tb models.ServerCatalog
+	return sc.db.Table(tb.TableName()).Create(servers).Error
 }

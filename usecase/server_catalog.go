@@ -190,8 +190,24 @@ func parsePrice(price string) (amount float64, currency string, err error) {
 func (sc *ServerCatalog) GetLocations(ctx context.Context) ([]string, error) {
 	locs, err := sc.SCRepo.GetLocations(ctx)
 	if err != nil {
-		return locs, err
+		return nil, err
 	}
 
 	return locs, nil
+}
+
+func (sc *ServerCatalog) GetHDDTypes(ctx context.Context) ([]string, error) {
+	hddTypes, err := sc.SCRepo.GetHDDTypes(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	feTypes := []string{}
+	for _, dbType := range hddTypes {
+		if frontendType, exists := utils.HDDTypeReverseMapping[dbType]; exists {
+			feTypes = append(feTypes, frontendType)
+		}
+	}
+
+	return feTypes, nil
 }

@@ -29,3 +29,13 @@ func (sc *ServerCatalog) GetLocations(ctx context.Context) ([]string, error) {
 	}
 	return locations, nil
 }
+
+func (sc *ServerCatalog) GetHDDTypes(ctx context.Context) ([]string, error) {
+	var hs models.HDDSpec
+	types := []string{}
+	err := sc.db.Table(hs.TableName()).Select("DISTINCT type").Order("type").Pluck("type", &types).Error
+	if err != nil {
+		return nil, fmt.Errorf("repository:usecase:: failed to fetch hdd specs %v", err.Error)
+	}
+	return types, nil
+}

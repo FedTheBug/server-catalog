@@ -11,9 +11,9 @@ import (
 	"log"
 )
 
-var migrateCmd = &cobra.Command{
-	Use:   "up",
-	Short: "Up database migrations",
+var downCmd = &cobra.Command{
+	Use:   "down",
+	Short: "Down database migrations",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		if err := config.LoadConfig(); err != nil {
 			log.Fatalf("Failed to load config: %v", err)
@@ -28,13 +28,13 @@ var migrateCmd = &cobra.Command{
 		if err != nil {
 			log.Fatalf("Failed to create migrate instance: %v", err)
 		}
-		if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+		if err := m.Down(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 			log.Fatalf("Migration failed: %v", err)
 		}
-		fmt.Println("Migrations applied successfully!")
+		fmt.Println("Migrations downgraded successfully!")
 	},
 }
 
 func init() {
-	RootCmd.AddCommand(migrateCmd)
+	RootCmd.AddCommand(downCmd)
 }

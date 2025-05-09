@@ -32,7 +32,44 @@ func (s *SCHandler) getServers(w http.ResponseWriter, r *http.Request) {
 
 	page := utils.NewPage(r)
 
-	data, err := s.scUseCase.GetListOfServers(ctx, &dto.ListServersCtr{Page: page})
+	var storageMin, storageMax *int
+	if minStr := r.URL.Query().Get("min_storage"); minStr != "" {
+		if min, err := utils.ParseStorageToGB(minStr); err == nil {
+			storageMin = &min
+		}
+	}
+	if maxStr := r.URL.Query().Get("max_storage"); maxStr != "" {
+		if max, err := utils.ParseStorageToGB(maxStr); err == nil {
+			storageMax = &max
+		}
+	}
+
+	var ramValues []int
+	if ramStr := r.URL.Query().Get("ram"); ramStr != "" {
+		ramValues = utils.ParseRAMValues(ramStr)
+	}
+
+	var hddTypeID *int
+	if hdd := r.URL.Query().Get("hdd_type"); hdd != "" {
+		if id, err := utils.GetHDDTypeID(hdd); err == nil {
+			hddTypeID = &id
+		}
+	}
+
+	var location *string
+	if loc := r.URL.Query().Get("location"); loc != "" {
+		location = &loc
+	}
+
+	data, err := s.scUseCase.GetListOfServers(ctx, &dto.ListServersCtr{
+		StorageMin: storageMin,
+		StorageMax: storageMax,
+		RAM:        ramValues,
+		HDD:        hddTypeID,
+		Location:   location,
+		Page:       page,
+	})
+
 	if err != nil {
 		_ = (&utils.Response{
 			Status:  http.StatusUnprocessableEntity,

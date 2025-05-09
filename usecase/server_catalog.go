@@ -203,14 +203,7 @@ func (sc *ServerCatalog) GetHDDTypes(ctx context.Context) ([]string, error) {
 		return nil, err
 	}
 
-	feTypes := []string{}
-	for _, dbType := range hddTypes {
-		if frontendType, exists := utils.HDDTypeReverseMapping[dbType]; exists {
-			feTypes = append(feTypes, frontendType)
-		}
-	}
-
-	return feTypes, nil
+	return hddTypes, nil
 }
 
 func (sc *ServerCatalog) GetListOfServers(ctx context.Context, ctr *dto.ListServersCtr) ([]dto.ListServerResp, error) {

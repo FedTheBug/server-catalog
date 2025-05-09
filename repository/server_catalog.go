@@ -53,6 +53,28 @@ func (sc *ServerCatalog) GetServers(ctx context.Context, ctr *dto.ListServersCtr
 
 	ctr.Page.Total = int(count)
 
+	if ctr.StorageMin != nil || ctr.StorageMax != nil {
+		storageQuery := "hdd_size * hdd_count"
+		if ctr.StorageMin != nil {
+			qry = qry.Where(storageQuery+" >= ?", *ctr.StorageMin)
+		}
+		if ctr.StorageMax != nil {
+			qry = qry.Where(storageQuery+" <= ?", *ctr.StorageMax)
+		}
+	}
+
+	if len(ctr.RAM) > 0 {
+		qry = qry.Where("ram_size IN ?", ctr.RAM)
+	}
+
+	if ctr.HDD != nil {
+		qry = qry.Where("hdd_type = ?", *ctr.HDD)
+	}
+
+	if ctr.Location != nil {
+		qry = qry.Where("location = ?", *ctr.Location)
+	}
+
 	if err := qry.WithContext(ctx).Limit(ctr.Page.Limit).Offset(ctr.Page.Offset()).Find(&res).Error; err != nil {
 		return nil, fmt.Errorf("repository:server_catalog:: failed to fetch  servers %v", err)
 	}

@@ -12,7 +12,12 @@ type UploadCatalogCtr struct {
 
 // ListServersCtr ...
 type ListServersCtr struct {
-	Page *utils.Page `json:"page"`
+	StorageMin *int
+	StorageMax *int
+	RAM        []int
+	HDD        *int
+	Location   *string
+	Page       *utils.Page `json:"page"`
 }
 
 type ListServerResp struct {

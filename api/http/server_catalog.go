@@ -22,7 +22,33 @@ func New(router *chi.Mux, cuc usecase.CatalogUseCase) {
 
 		r.Get("/servers/hdd-types", handler.getHddTypes)
 		r.Get("/servers/locations", handler.getLocations)
+
+		r.Get("/servers/list", handler.getServers)
 	})
+}
+
+func (s *SCHandler) getServers(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	page := utils.NewPage(r)
+
+	data, err := s.scUseCase.GetListOfServers(ctx, &dto.ListServersCtr{Page: page})
+	if err != nil {
+		_ = (&utils.Response{
+			Status:  http.StatusUnprocessableEntity,
+			Message: "unable to fetch servers",
+			Error:   err.Error(),
+		}).Render(w)
+		return
+	}
+
+	_ = (&utils.Response{
+		Status:     http.StatusOK,
+		Pagination: page,
+		Data:       data,
+	}).Render(w)
+
+	return
 }
 
 func (s *SCHandler) getHddTypes(w http.ResponseWriter, r *http.Request) {

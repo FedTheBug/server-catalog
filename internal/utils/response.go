@@ -9,7 +9,7 @@ import (
 type Response struct {
 	Status     int         `json:"-"`
 	Data       interface{} `json:"data,omitempty"`
-	Pagination *Pagination `json:"pagination,omitempty"`
+	Pagination *Page       `json:"pagination,omitempty"`
 	Message    interface{} `json:"message,omitempty"`
 	Error      interface{} `json:"error,omitempty"` // this field will be omitted from user response body based on log level
 }

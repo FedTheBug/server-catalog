@@ -36,6 +36,9 @@ const (
 const (
 	StorageUnitGB = 1
 	StorageUnitTB = 1024 // 1 TB = 1024 GB
+
+	HDDUnitGB = "GB"
+	HDDUnitTB = "TB"
 )
 
 // GetHDDTypeID returns the HDD type ID based on the parsed type string.

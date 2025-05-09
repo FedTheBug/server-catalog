@@ -1,69 +1,48 @@
 package utils
 
 import (
-	"github.com/server-catalog/internal/config"
 	"net/http"
 	"strconv"
 )
 
-const (
-	DefaultPageNumber int    = 1
-	DefaultPageSize   int    = 20
-	DefaultOrder      string = "asc"
-	OrderDesc         string = "desc"
-)
-
-// Pagination ...
-type Pagination struct {
-	CurrentPage int64 `json:"current_page"`
-	NextPage    int64 `json:"next_page"`
-	Limit       int64 `json:"limit"`
-	Count       int64 `json:"count"`
+// CursorPagination ...
+type CursorPagination struct {
+	NextCursor interface{} `json:"next_cursor"`
 }
 
-// NewPagination ...
-func NewPagination(count, page, limit int64) *Pagination {
-	if page <= 0 {
-		page = 1
+// NewCursorPagination ...
+func NewCursorPagination(data interface{}) *CursorPagination {
+	return &CursorPagination{
+		NextCursor: data,
 	}
-
-	p := &Pagination{
-		Count: count,
-		Limit: limit,
-	}
-
-	p.CurrentPage = page
-	p.NextPage = p.CurrentPage + 1
-	return p
 }
 
-// GetPager return page & limit number from http request
-func GetPager(r *http.Request) (page, limit, offset int64, err error) {
-	p := r.URL.Query().Get("page")
-	l := r.URL.Query().Get("limit")
-	maxLimit := int64(config.App().PaginationLimit)
-	limit = maxLimit
+// Page represents the pagination data
+type Page struct {
+	Limit   int `json:"per_page"`
+	Current int `json:"page_no"`
+	Total   int `json:"total"`
+}
 
-	if p != "" {
-		page, err = strconv.ParseInt(p, 10, 32)
-		if err != nil {
-			return
-		}
+// Offset returns the offset of the  page
+func (p *Page) Offset() int {
+	return (p.Current * p.Limit) - p.Limit
+}
+
+// NewPage is the factory function  a new page
+func NewPage(r *http.Request) *Page {
+	limit, _ := strconv.Atoi(r.URL.Query().Get("per_page"))
+	if limit < 1 {
+		limit = 10
 	}
-	if l != "" {
-		limit, err = strconv.ParseInt(l, 10, 32)
-		if err != nil {
-			return
-		}
-		if limit > maxLimit {
-			limit = maxLimit
-		}
+	currentPageP := r.URL.Query().Get("page_no")
+	currentPage, _ := strconv.Atoi(currentPageP)
+	if currentPage <= 0 {
+		currentPage = 1
 	}
-	if page <= 1 {
-		page = 1
-		offset = 0
-	} else {
-		offset = (page - 1) * limit
+
+	return &Page{
+		Limit:   limit,
+		Current: currentPage,
 	}
-	return
 }

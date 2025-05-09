@@ -1,6 +1,5 @@
 package utils
 
-// constants/hdd.go
 const (
 	// Frontend display values
 	HDDSATAFE = "SATA"

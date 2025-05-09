@@ -5,18 +5,6 @@ import (
 	"strconv"
 )
 
-// CursorPagination ...
-type CursorPagination struct {
-	NextCursor interface{} `json:"next_cursor"`
-}
-
-// NewCursorPagination ...
-func NewCursorPagination(data interface{}) *CursorPagination {
-	return &CursorPagination{
-		NextCursor: data,
-	}
-}
-
 // Page represents the pagination data
 type Page struct {
 	Limit   int `json:"per_page"`

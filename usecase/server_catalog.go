@@ -212,6 +212,10 @@ func (sc *ServerCatalog) GetListOfServers(ctx context.Context, ctr *dto.ListServ
 		return nil, fmt.Errorf("usecase:server_catalog:: failed to get list of servers %v", err)
 	}
 
+	if len(result) < 1 {
+		return nil, utils.ErrServerNotFound
+	}
+
 	transformedList := transformer.TransformServerList(result)
 
 	return transformedList, nil

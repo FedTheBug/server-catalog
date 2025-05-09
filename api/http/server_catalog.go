@@ -1,6 +1,7 @@
 package http
 
 import (
+	"errors"
 	"github.com/go-chi/chi/v5"
 	"github.com/server-catalog/internal/dto"
 	"github.com/server-catalog/internal/utils"
@@ -71,6 +72,14 @@ func (s *SCHandler) getServers(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
+		if errors.Is(err, utils.ErrServerNotFound) {
+			_ = (&utils.Response{
+				Status:  http.StatusNotFound,
+				Message: "no server found with these configs",
+				Error:   err.Error(),
+			}).Render(w)
+			return
+		}
 		_ = (&utils.Response{
 			Status:  http.StatusUnprocessableEntity,
 			Message: "unable to fetch servers",

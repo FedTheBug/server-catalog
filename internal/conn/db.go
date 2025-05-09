@@ -23,7 +23,7 @@ func Ping() error {
 }
 
 var newLogger = logger.New(
-	log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+	log.New(os.Stdout, "\r\n", log.LstdFlags),
 	logger.Config{
 		SlowThreshold:             500 * time.Millisecond, // Slow SQL threshold
 		LogLevel:                  logger.Info,            // Log level

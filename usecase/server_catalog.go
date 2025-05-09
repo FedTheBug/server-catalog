@@ -8,6 +8,7 @@ import (
 	"github.com/server-catalog/internal/utils"
 	"github.com/server-catalog/models"
 	"github.com/server-catalog/repository"
+	"github.com/server-catalog/transformer"
 	"github.com/xuri/excelize/v2"
 	"io"
 	"regexp"
@@ -202,12 +203,20 @@ func (sc *ServerCatalog) GetHDDTypes(ctx context.Context) ([]string, error) {
 		return nil, err
 	}
 
-	feTypes := []string{}
-	for _, dbType := range hddTypes {
-		if frontendType, exists := utils.HDDTypeReverseMapping[dbType]; exists {
-			feTypes = append(feTypes, frontendType)
-		}
+	return hddTypes, nil
+}
+
+func (sc *ServerCatalog) GetListOfServers(ctx context.Context, ctr *dto.ListServersCtr) ([]dto.ListServerResp, error) {
+	result, err := sc.SCRepo.GetServers(ctx, ctr)
+	if err != nil {
+		return nil, fmt.Errorf("usecase:server_catalog:: failed to get list of servers %v", err)
 	}
 
-	return feTypes, nil
+	if len(result) < 1 {
+		return nil, utils.ErrServerNotFound
+	}
+
+	transformedList := transformer.TransformServerList(result)
+
+	return transformedList, nil
 }

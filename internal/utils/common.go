@@ -1,8 +1,10 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
 	_ "github.com/davecgh/go-spew/spew"
+	"io"
 	"strings"
 )
 
@@ -95,4 +97,9 @@ func GetCurrencyID(currencySymbol string) (int, error) {
 	default:
 		return 0, fmt.Errorf("unknown currency symbol: %s", currencySymbol)
 	}
+}
+
+// ParseJSON parses the JSON response body into the provided interface
+func ParseJSON(body io.Reader, v interface{}) error {
+	return json.NewDecoder(body).Decode(v)
 }

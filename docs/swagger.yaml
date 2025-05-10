@@ -1,0 +1,261 @@
+basePath: /api/v1
+definitions:
+  dto.ListServerResp:
+    description: Server information in the response
+    properties:
+      hdd:
+        example: 4x1TBSATA2
+        type: string
+      location:
+        example: AmsterdamAMS-01
+        type: string
+      model:
+        example: HP DL120G7Intel G850
+        type: string
+      price:
+        example: €39.99
+        type: string
+      ram:
+        example: 4GBDDR3
+        type: string
+    type: object
+  utils.Page:
+    description: Pagination details
+    properties:
+      page_no:
+        example: 1
+        type: integer
+      per_page:
+        example: 10
+        type: integer
+      total:
+        example: 486
+        type: integer
+    type: object
+  utils.Response:
+    properties:
+      data: {}
+      error: {}
+      message: {}
+      pagination:
+        $ref: '#/definitions/utils.Page'
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: A server catalog service API documentation
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Server Catalog API
+  version: "1.0"
+paths:
+  /servers/hdd-types:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all available HDD types in the server catalog
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of HDD types (e.g., SAS, SATA2, SSD)
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  items:
+                    type: string
+                  type: array
+              type: object
+        "422":
+          description: Unable to fetch HDD types
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+      security:
+      - AppKeyAuth: []
+      summary: Get HDD types
+      tags:
+      - servers
+  /servers/list:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of servers with optional filtering by
+        storage, RAM, HDD type, and location
+      parameters:
+      - description: 'Number of items per page (default: 10)'
+        in: query
+        name: per_page
+        type: integer
+      - description: 'Page number (default: 1)'
+        in: query
+        name: page_no
+        type: integer
+      - description: Minimum storage (e.g., 1TB)
+        in: query
+        name: min_storage
+        type: string
+      - description: Maximum storage (e.g., 100TB)
+        in: query
+        name: max_storage
+        type: string
+      - description: RAM values (e.g., 2GB,4GB)
+        in: query
+        name: ram
+        type: string
+      - description: HDD type (e.g., SATA2, SAS, SSD)
+        in: query
+        name: hdd_type
+        type: string
+      - description: Server location (e.g., AmsterdamAMS-01)
+        in: query
+        name: location
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of servers with pagination
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.ListServerResp'
+                  type: array
+                pagination:
+                  $ref: '#/definitions/utils.Page'
+              type: object
+        "404":
+          description: No servers found with the specified filters
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "422":
+          description: Unable to fetch servers
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+      security:
+      - AppKeyAuth: []
+      summary: Get list of servers
+      tags:
+      - servers
+  /servers/locations:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all available server locations in the catalog
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of server locations
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  items:
+                    type: string
+                  type: array
+              type: object
+        "422":
+          description: Unable to fetch locations
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+      security:
+      - AppKeyAuth: []
+      summary: Get server locations
+      tags:
+      - servers
+  /upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload a server catalog file in XLSX format. The file must contain
+        valid server catalog data.
+      parameters:
+      - description: Server catalog file (XLSX format)
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Catalog uploaded successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+        "400":
+          description: Invalid file format or upload failed
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "422":
+          description: Unable to process the file
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+      security:
+      - AppKeyAuth: []
+      summary: Upload server catalog
+      tags:
+      - servers
+securityDefinitions:
+  AppKeyAuth:
+    in: header
+    name: App-key
+    type: apiKey
+swagger: "2.0"

@@ -11,7 +11,7 @@ type Response struct {
 	Data       interface{} `json:"data,omitempty"`
 	Pagination *Page       `json:"pagination,omitempty"`
 	Message    interface{} `json:"message,omitempty"`
-	Error      interface{} `json:"error,omitempty"` // this field will be omitted from user response body based on log level
+	Error      interface{} `json:"error,omitempty"`
 }
 
 // Render ...

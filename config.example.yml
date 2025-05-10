@@ -3,6 +3,7 @@ app:
   port: 8080
   env: "development"
   pagination_limit: 10
+  secret_key: PPTjT3ApHD
 
 db:
   host: "127.0.0.1"

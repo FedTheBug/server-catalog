@@ -6,10 +6,11 @@ import (
 )
 
 // Page represents the pagination data
+// @Description Pagination details
 type Page struct {
-	Limit   int `json:"per_page"`
-	Current int `json:"page_no"`
-	Total   int `json:"total"`
+	Limit   int `json:"per_page" example:"10"`
+	Current int `json:"page_no" example:"1"`
+	Total   int `json:"total" example:"486"`
 }
 
 // Offset returns the offset of the  page

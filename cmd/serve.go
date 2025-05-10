@@ -54,7 +54,12 @@ func serve(cmd *cobra.Command, args []string) {
 	signal.Notify(stop, os.Interrupt)
 
 	go func() {
+		log.Println("╔════════════════════════════════════════════╗")
+		log.Println("║             🚀 Server Starting             ║")
+		log.Println("╠════════════════════════════════════════════╣")
 		log.Println("HTTP:: Listening on port ", config.App().Port)
+		log.Printf("║ 📚 API Docs: http://%s:%d/swagger/index.html\n", config.App().Base, config.App().Port)
+		log.Println("╚════════════════════════════════════════════╝")
 		if err := hServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Fatal(err)
 		}

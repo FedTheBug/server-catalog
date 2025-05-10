@@ -15,6 +15,7 @@ type Application struct {
 	Port            int
 	Env             string
 	PaginationLimit int
+	SecretKey       string
 }
 
 var app Application
@@ -33,5 +34,6 @@ func LoadApp() {
 		Port:            viper.GetInt("app.port"),
 		Env:             viper.GetString("app.env"),
 		PaginationLimit: viper.GetInt("app.pagination_limit"),
+		SecretKey:       viper.GetString("app.secret_key"),
 	}
 }

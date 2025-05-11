@@ -45,6 +45,10 @@ func (sc *ServerCatalog) UploadCatalog(ctx context.Context, ctr *dto.UploadCatal
 		return fmt.Errorf("usecase:server_catalog:no data in the sheet")
 	}
 
+	if len(rows)-1 > 1000 {
+		return fmt.Errorf("usecase:server_catalog:maximum number of rows exceeded (1000)")
+	}
+
 	// Validate header
 	expected := []string{"Model", "RAM", "HDD", "Location", "Price"}
 	header := rows[0]

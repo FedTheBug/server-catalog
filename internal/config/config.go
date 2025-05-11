@@ -1,8 +1,8 @@
 package config
 
 import (
+	"fmt"
 	"github.com/spf13/viper"
-	"log"
 	"sync"
 )
 
@@ -13,7 +13,7 @@ func LoadConfig() error {
 	viper.SetConfigFile("config.example.yml") // local
 
 	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("Error reading config file: %s", err)
+		fmt.Errorf("error reading config file: %s", err)
 	}
 
 	LoadApp()

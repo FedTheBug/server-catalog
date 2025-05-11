@@ -46,12 +46,34 @@ make build-run
 ### API Documentation
 
 Once the server is running, you can access the Swagger documentation at: `http://localhost:8080/swagger/index.html`
+- Make sure to authorize before hitting the endpoints using the `app-key` provided below.
 
 
-### app-key: PPTjT3ApHD
+## `app-key: PPTjT3ApHD`
 
 
 ### Available Make Commands
 
 - `make build-run`: Build and run the application
 - `make clean`: Clean up Docker containers and built files
+
+### Running Tests
+
+1. Run all tests:
+```bash
+go test -v ./...
+```
+
+2. Run tests with coverage:
+```bash
+go test -v -cover ./...
+```
+
+3. Run specific package tests:
+```bash
+# Run repository tests
+go test -v ./repository
+
+# Run with coverage for repository
+go test -v -cover ./repository
+```

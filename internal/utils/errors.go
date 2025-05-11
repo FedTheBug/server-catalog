@@ -8,4 +8,5 @@ type Errors map[string][]string
 // Different error types
 var (
 	ErrServerNotFound = errors.New("server not found")
+	ErrUploadFailed   = errors.New("failed to upload data into the database")
 )

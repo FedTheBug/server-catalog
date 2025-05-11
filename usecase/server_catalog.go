@@ -118,27 +118,27 @@ func (sc *ServerCatalog) UploadCatalog(ctx context.Context, ctr *dto.UploadCatal
 	}
 
 	if err := sc.SCRepo.Upload(ctx, catalogs); err != nil {
-		return fmt.Errorf("usecase:server_catalog:: failed to upload %v", err.Error())
+		return fmt.Errorf("usecase:server_catalog:: failed to upload %v", utils.ErrUploadFailed)
 	}
 	return nil
 }
 
-func parseRAM(ram string) (size int, typ string, err error) {
+func parseRAM(ram string) (int, string, error) {
 	ram = strings.ToUpper(strings.TrimSpace(ram))
 	re := regexp.MustCompile(`^(\d+)\s*GB\s*(\w+)$`)
 	matches := re.FindStringSubmatch(ram)
 	if len(matches) != 3 {
 		return 0, "", fmt.Errorf("invalid RAM format")
 	}
-	size, err = strconv.Atoi(matches[1])
+	size, err := strconv.Atoi(matches[1])
 	if err != nil {
 		return 0, "", err
 	}
-	typ = matches[2]
-	return
+	typ := matches[2]
+	return size, typ, err
 }
 
-func parseHDD(hdd string) (count int, sizeGB int, typ string, err error) {
+func parseHDD(hdd string) (int, int, string, error) {
 	hdd = strings.TrimSpace(hdd)
 	re := regexp.MustCompile(`(?i)^(\d+)x(\d+)(TB|GB)([A-Z0-9]+)$`)
 	matches := re.FindStringSubmatch(hdd)
@@ -146,7 +146,7 @@ func parseHDD(hdd string) (count int, sizeGB int, typ string, err error) {
 		return 0, 0, "", fmt.Errorf("invalid HDD format: %q", hdd)
 	}
 
-	count, err = strconv.Atoi(matches[1])
+	count, err := strconv.Atoi(matches[1])
 	if err != nil {
 		return 0, 0, "", err
 	}
@@ -157,15 +157,15 @@ func parseHDD(hdd string) (count int, sizeGB int, typ string, err error) {
 	}
 
 	unit := strings.ToUpper(matches[3])
-	typ = strings.ToUpper(matches[4])
+	typ := strings.ToUpper(matches[4])
 
 	// Convert to GB
-	sizeGB = utils.ConvertToGB(size, unit)
+	sizeGB := utils.ConvertToGB(size, unit)
 
 	return count, sizeGB, typ, nil
 }
 
-func parsePrice(price string) (amount float64, currency string, err error) {
+func parsePrice(price string) (float64, string, error) {
 	price = strings.TrimSpace(price)
 
 	re := regexp.MustCompile(`^([^\d]+)\s*([\d\.]+)$`)
@@ -174,13 +174,13 @@ func parsePrice(price string) (amount float64, currency string, err error) {
 		return 0, "", fmt.Errorf("invalid price format: %s", price)
 	}
 
-	currency = strings.TrimSpace(matches[1])
+	currency := strings.TrimSpace(matches[1])
 
 	if currency == "S$" {
 		currency = utils.CurrencySymbolSGD
 	}
 
-	amount, err = strconv.ParseFloat(matches[2], 64)
+	amount, err := strconv.ParseFloat(matches[2], 64)
 	if err != nil {
 		return 0, "", fmt.Errorf("invalid amount format: %s", matches[2])
 	}

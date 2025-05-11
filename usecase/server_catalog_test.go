@@ -13,7 +13,6 @@ import (
 	"testing"
 )
 
-// mockFile implements multipart.File interface
 type mockFile struct {
 	*bytes.Reader
 }
@@ -22,7 +21,6 @@ func (m *mockFile) Close() error {
 	return nil
 }
 
-// mockCatalogRepository is a mock implementation of repository.CatalogRepository
 type mockCatalogRepository struct {
 	uploadFunc       func(ctx context.Context, catalogs []models.ServerCatalog) error
 	getLocationsFunc func(ctx context.Context) ([]string, error)
@@ -101,27 +99,25 @@ func TestServerCatalog_UploadCatalog(t *testing.T) {
 			mockUpload: func(ctx context.Context, catalogs []models.ServerCatalog) error {
 				return errors.New("database error")
 			},
-			expectedError: errors.New("usecase:server_catalog:: failed to upload database error"),
+			expectedError: errors.New("usecase:server_catalog:: failed to upload failed to upload data into the database"),
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Create test Excel file
+
 			excelBuffer, err := createTestExcelFile(tt.excelData)
 			if err != nil {
 				t.Fatalf("Failed to create test Excel file: %v", err)
 			}
 
-			// Create mock repository
+			// mock repository
 			mockRepo := &mockCatalogRepository{
 				uploadFunc: tt.mockUpload,
 			}
 
-			// Create usecase instance
 			uc := New(mockRepo)
 
-			// Create upload controller with mockFile
 			ctr := &dto.UploadCatalogCtr{
 				File: &mockFile{bytes.NewReader(excelBuffer.Bytes())},
 			}
@@ -234,7 +230,7 @@ func TestServerCatalog_GetHDDTypes(t *testing.T) {
 func TestServerCatalog_GetListOfServers(t *testing.T) {
 	amsterdam := "Amsterdam"
 	invalid := "Invalid"
-	hddType := 1 // SATA2 type
+	hddType := 1 // SATA2
 
 	tests := []struct {
 		name          string

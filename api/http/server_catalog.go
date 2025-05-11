@@ -233,6 +233,14 @@ func (s *SCHandler) uploadCatalog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := s.scUseCase.UploadCatalog(ctx, &dto.UploadCatalogCtr{File: file}); err != nil {
+		if errors.Is(err, utils.ErrUploadFailed) {
+			_ = (&utils.Response{
+				Status:  http.StatusInternalServerError,
+				Message: "failed to upload file",
+				Error:   err.Error(),
+			}).Render(w)
+			return
+		}
 		_ = (&utils.Response{
 			Status:  http.StatusBadRequest,
 			Message: "failed to upload file",

@@ -26,7 +26,7 @@ func NewPage(r *http.Request) *Page {
 	}
 	currentPageP := r.URL.Query().Get("page_no")
 	currentPage, _ := strconv.Atoi(currentPageP)
-	if currentPage <= 0 {
+	if currentPage < 1 {
 		currentPage = 1
 	}
 

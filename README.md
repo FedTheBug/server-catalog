@@ -51,6 +51,9 @@ Once the server is running, you can access the Swagger documentation at: `http:/
 
 ## `app-key: PPTjT3ApHD`
 
+## 📊 Database Schema
+
+### ![Database Schema](./diagram.png)
 
 ### Available Make Commands
 

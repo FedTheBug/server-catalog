@@ -101,6 +101,22 @@ func TestServerCatalog_UploadCatalog(t *testing.T) {
 			},
 			expectedError: errors.New("usecase:server_catalog:: failed to upload failed to upload data into the database"),
 		},
+		{
+			name: "too many rows",
+			excelData: func() [][]string {
+				
+				data := make([][]string, 1002)
+				data[0] = []string{"Model", "RAM", "HDD", "Location", "Price"}
+				for i := 1; i < 1002; i++ {
+					data[i] = []string{"Dell R210-II", "16GB DDR3", "2x500GBSATA2", "AmsterdamAMS-01", "$35.99"}
+				}
+				return data
+			}(),
+			mockUpload: func(ctx context.Context, catalogs []models.ServerCatalog) error {
+				return nil
+			},
+			expectedError: errors.New("usecase:server_catalog:maximum number of rows exceeded (1000)"),
+		},
 	}
 
 	for _, tt := range tests {
